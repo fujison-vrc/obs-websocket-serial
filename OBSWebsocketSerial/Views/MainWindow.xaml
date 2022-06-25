@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="400" Width="600" >
+        Title="{Binding Title}" Height="420" Width="600" >
 
     <Window.Resources>
         <Style TargetType="GroupBox">
@@ -30,6 +30,11 @@
             <ColumnDefinition Width="250"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
 
         <!--左パネル（接続設定）-->
         <StackPanel>
@@ -145,6 +150,12 @@
             </GroupBox>
 
         </StackPanel>
+        
+        <!--ステータスバー-->
+        <StatusBar Grid.Row="1"
+                   Grid.ColumnSpan="2">
+            <TextBlock Text="{Binding StatuBarText, FallbackValue='StatusBar'}"/>
+        </StatusBar>
 
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
     </Grid>
