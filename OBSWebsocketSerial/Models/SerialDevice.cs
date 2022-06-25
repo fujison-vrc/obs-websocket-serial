@@ -13,10 +13,12 @@ namespace OBSWebsocketSerial.Models
         public string PortName { get; set; } = null;
         public int BaudRate { get; set; } = 9600;
 
+        public delegate void MessageEventHandler(object sender, string data);
         public delegate void ErrorEventHandler(object sender, Exception ex);
 
         public event EventHandler Opened;
         public event EventHandler Closed;
+        public event MessageEventHandler MessageReceived;
         public event ErrorEventHandler Errored;
 
         public bool IsOpen
@@ -48,6 +50,8 @@ namespace OBSWebsocketSerial.Models
             {
                 _serialPort.PortName = PortName;
                 _serialPort.BaudRate = BaudRate;
+
+                _serialPort.DataReceived += DataReceived;
 
                 _serialPort.Open();
             }
@@ -88,6 +92,15 @@ namespace OBSWebsocketSerial.Models
                 if (!_serialPort.IsOpen) Closed(_serialPort, EventArgs.Empty);
                 _serialPort = null;
             }
+        }
+
+        private void DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort)sender;
+
+            string message = sp.ReadLine().Replace("\r", "");
+
+            if (MessageReceived != null) MessageReceived(_serialPort, message);
         }
     }
 }

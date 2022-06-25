@@ -205,6 +205,7 @@ namespace OBSWebsocketSerial.ViewModels
                 _serialDevice.Opened += SerialDevice_Opened;
                 _serialDevice.Closed += SerialDevice_Closed;
                 _serialDevice.Errored += SerialDevice_Errored;
+                _serialDevice.MessageReceived += SerialDevice_MessageReceived;
 
                 _serialDevice.Connect();
 
@@ -233,6 +234,11 @@ namespace OBSWebsocketSerial.ViewModels
         private void SerialDevice_Errored(object sender, Exception ex)
         {
             Debug.WriteLine(ex.Message);
+        }
+
+        private void SerialDevice_MessageReceived(object sender, string message)
+        {
+            Debug.WriteLine(message);
         }
     }
 }
