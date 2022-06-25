@@ -16,6 +16,13 @@ namespace OBSWebsocketSerial.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
+        private string _statusBarText = string.Empty;
+        public string StatusBarText
+        {
+            get { return _statusBarText; }
+            set { SetProperty(ref _statusBarText, value); }
+        }
+
         #region obs connection property
 
         // OBSホスト名/IPのテキスト
