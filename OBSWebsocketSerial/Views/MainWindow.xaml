@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="350" Width="600" >
+        Title="{Binding Title}" Height="400" Width="600" >
 
     <Window.Resources>
         <Style TargetType="GroupBox">
@@ -38,40 +38,47 @@
                     <DockPanel>
                         <Label Content="Hostname/IP"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <TextBox/>
+                        <TextBox Text="{Binding ObsHostText}"
+                                 IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"/>
                     </DockPanel>
 
                     <!--OBSのポート番号-->
                     <DockPanel>
                         <Label Content="Port"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <TextBox/>
+                        <TextBox Text="{Binding ObsPortText}"
+                                 IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"/>
                     </DockPanel>
 
                     <!--OBSのパスワードを利用するか-->
                     <DockPanel>
                         <Label Content="Use password"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <CheckBox VerticalAlignment="Center"/>
+                        <CheckBox VerticalAlignment="Center"
+                                  IsChecked="{Binding ObsUsePasswordCheck}"
+                                  IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"/>
                     </DockPanel>
 
-                    <!--OBSのパスワードを利用するか-->
+                    <!--OBSのパスワード-->
                     <DockPanel>
                         <Label Content="Password"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <TextBox/>
+                        <TextBox Text="{Binding ObsPasswordText}"
+                                 IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"/>
                     </DockPanel>
 
                     <!--OBSのステータス表示-->
                     <DockPanel>
                         <Label Content="Status"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <Label Content="Not connected"/>
+                        <Label Content="{Binding ObsStatusText, FallbackValue='Unknown'}"/>
                     </DockPanel>
 
                     <!--OBSの接続/切断ボタン-->
                     <DockPanel>
-                        <Button Content="Connect"/>
+                        <Button Content="{Binding ObsToggleConnectionButtonText, FallbackValue='Connect'}"
+                                IsEnabled="{Binding ObsToggleConnectionButtonEnable}"
+                                Command="{Binding ObsToggleConnectionCommand}"/>
                     </DockPanel>
 
                 </StackPanel>
@@ -85,26 +92,32 @@
                     <DockPanel>
                         <Label Content="Port name"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <ComboBox/>
+                        <ComboBox ItemsSource="{Binding SerialPortNameList}"
+                                  SelectedItem="{Binding SerialPortNameSelected}"
+                                  IsEnabled="{Binding SerialPortConnectionInputable, Mode=OneWay}"/>
                     </DockPanel>
 
                     <!--シリアルボーレート-->
                     <DockPanel>
                         <Label Content="Baud rate"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <ComboBox IsEditable="True"/>
+                        <ComboBox IsEditable="True"
+                                  ItemsSource="{Binding SerialPortBaudRateList}"
+                                  Text="{Binding SerialPortBaudRateText}"
+                                  IsEnabled="{Binding SerialPortConnectionInputable, Mode=OneWay}"/>
                     </DockPanel>
 
                     <!--シリアルステータス-->
                     <DockPanel>
                         <Label Content="Status"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <Label Content="Not connected"/>
+                        <Label Content="{Binding SerialPortStatusText, FallbackValue='Unknown'}"/>
                     </DockPanel>
 
                     <!--シリアル接続/切断ボタン-->
                     <DockPanel>
-                        <Button Content="Connect"/>
+                        <Button Content="{Binding SerialPortToggleConnectionButtonText, FallbackValue='Connect'}"
+                                Command="{Binding SerialPortToggleConnectionCommand}"/>
                     </DockPanel>
 
                 </StackPanel>
