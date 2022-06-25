@@ -2,6 +2,8 @@
 using Prism.Commands;
 using System.Collections.Generic;
 using System.Diagnostics;
+using OBSWebsocketSerial.Models;
+using System;
 
 namespace OBSWebsocketSerial.ViewModels
 {
@@ -92,7 +94,7 @@ namespace OBSWebsocketSerial.ViewModels
         #region serial connection property
 
         // シリアルポート名のリスト
-        private List<string> _serialPortNameList = new List<string>();
+        private List<string> _serialPortNameList = new();
         public List<string> SerialPortNameList
         {
             get { return _serialPortNameList; }
@@ -108,7 +110,7 @@ namespace OBSWebsocketSerial.ViewModels
         }
 
         // シリアルポートのボーレートリスト
-        private List<string> _serialPortBaudRateList = new List<string>()
+        private List<string> _serialPortBaudRateList = new()
         {
             "9600", "19200", "38400", "57600", "115200"
         };
@@ -152,10 +154,17 @@ namespace OBSWebsocketSerial.ViewModels
 
         #endregion
 
+        private SerialDevice _serialDevice;
+
         public MainWindowViewModel()
         {
             ObsToggleConnectionCommand = new DelegateCommand(ObsToggleConnection);
             SerialPortToggleConnectionCommand = new DelegateCommand(SerialPortToggleConnection);
+
+            foreach (string device in SerialDevice.PortList)
+            {
+                SerialPortNameList.Add(device);
+            }
         }
 
         public DelegateCommand ObsToggleConnectionCommand { get; }
@@ -168,7 +177,75 @@ namespace OBSWebsocketSerial.ViewModels
 
         private void SerialPortToggleConnection()
         {
-            //
+            if (_serialDevice != null && _serialDevice.IsOpen)
+            {
+                _serialDevice.Disconnect();
+
+                _serialDevice = null;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(SerialPortNameSelected))
+                {
+                    Debug.WriteLine("serial port is not selected");
+                    return;
+                }
+
+                if (_serialDevice == null) _serialDevice = new();
+
+                // シリアルポート名を設定
+                _serialDevice.PortName = SerialPortNameSelected;
+
+                // ボーレートを設定
+                int baudRate;
+                if (int.TryParse(SerialPortBaudRateText, out baudRate))
+                {
+                    _serialDevice.BaudRate = baudRate;
+                }
+                else
+                {
+                    Debug.WriteLine("baud rate must be an integer");
+                    return;
+                }
+
+                // イベントを登録
+                _serialDevice.Opened += SerialDevice_Opened;
+                _serialDevice.Closed += SerialDevice_Closed;
+                _serialDevice.Errored += SerialDevice_Errored;
+                _serialDevice.MessageReceived += SerialDevice_MessageReceived;
+
+                _serialDevice.Connect();
+
+                if (!_serialDevice.IsOpen) _serialDevice = null;
+            }
+        }
+
+        private void SerialDevice_Opened(object sender, EventArgs e)
+        {
+            SerialPortStatusText = "Connected";
+            SerialPortToggleConnectionButtonText = "Disconnect";
+            SerialPortConnectionInputable = false;
+
+            Debug.WriteLine("SerialDevice_Opened");
+        }
+
+        private void SerialDevice_Closed(object sender, EventArgs e)
+        {
+            SerialPortStatusText = "Not connected";
+            SerialPortToggleConnectionButtonText = "Connect";
+            SerialPortConnectionInputable = true;
+
+            Debug.WriteLine("SerialDevice_Closed");
+        }
+
+        private void SerialDevice_Errored(object sender, Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+
+        private void SerialDevice_MessageReceived(object sender, string message)
+        {
+            Debug.WriteLine(message);
         }
     }
 }
