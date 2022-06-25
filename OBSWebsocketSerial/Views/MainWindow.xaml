@@ -150,11 +150,9 @@
             </GroupBox>
 
         </StackPanel>
-        
-        <!--ステータスバー-->
-        <StatusBar Grid.Row="1"
-                   Grid.ColumnSpan="2">
-            <TextBlock Text="{Binding StatuBarText, FallbackValue='StatusBar'}"/>
+
+        <StatusBar Grid.Row="1" Grid.ColumnSpan="2">
+            <TextBlock Text="{Binding StatusBarText, FallbackValue='StatusBarText'}"/>
         </StatusBar>
 
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
