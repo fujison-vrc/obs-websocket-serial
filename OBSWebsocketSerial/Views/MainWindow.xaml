@@ -3,8 +3,132 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="350" Width="525" >
+        Title="{Binding Title}" Height="350" Width="600" >
+
+    <Window.Resources>
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Padding" Value="3"/>
+        </Style>
+
+        <Style TargetType="Label" x:Key="ConnectionPropertyLabel">
+            <Setter Property="Width" Value="85"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <!--左パネル（接続設定）-->
+        <StackPanel>
+
+            <!--OBS接続設定-->
+            <GroupBox Header="OBS Connection">
+                <StackPanel>
+
+                    <!--OBSのホスト名/IP-->
+                    <DockPanel>
+                        <Label Content="Hostname/IP"
+                               Style="{StaticResource ConnectionPropertyLabel}"/>
+                        <TextBox/>
+                    </DockPanel>
+
+                    <!--OBSのポート番号-->
+                    <DockPanel>
+                        <Label Content="Port"
+                               Style="{StaticResource ConnectionPropertyLabel}"/>
+                        <TextBox/>
+                    </DockPanel>
+
+                    <!--OBSのパスワードを利用するか-->
+                    <DockPanel>
+                        <Label Content="Use password"
+                               Style="{StaticResource ConnectionPropertyLabel}"/>
+                        <CheckBox VerticalAlignment="Center"/>
+                    </DockPanel>
+
+                    <!--OBSのパスワードを利用するか-->
+                    <DockPanel>
+                        <Label Content="Password"
+                               Style="{StaticResource ConnectionPropertyLabel}"/>
+                        <TextBox/>
+                    </DockPanel>
+
+                    <!--OBSのステータス表示-->
+                    <DockPanel>
+                        <Label Content="Status"
+                               Style="{StaticResource ConnectionPropertyLabel}"/>
+                        <Label Content="Not connected"/>
+                    </DockPanel>
+
+                    <!--OBSの接続/切断ボタン-->
+                    <DockPanel>
+                        <Button Content="Connect"/>
+                    </DockPanel>
+
+                </StackPanel>
+            </GroupBox>
+
+            <!--シリアル接続設定-->
+            <GroupBox Header="Serial Connection">
+                <StackPanel>
+
+                    <!--シリアルポート名-->
+                    <DockPanel>
+                        <Label Content="Port name"
+                               Style="{StaticResource ConnectionPropertyLabel}"/>
+                        <ComboBox/>
+                    </DockPanel>
+
+                    <!--シリアルボーレート-->
+                    <DockPanel>
+                        <Label Content="Baud rate"
+                               Style="{StaticResource ConnectionPropertyLabel}"/>
+                        <ComboBox IsEditable="True"/>
+                    </DockPanel>
+
+                    <!--シリアルステータス-->
+                    <DockPanel>
+                        <Label Content="Status"
+                               Style="{StaticResource ConnectionPropertyLabel}"/>
+                        <Label Content="Not connected"/>
+                    </DockPanel>
+
+                    <!--シリアル接続/切断ボタン-->
+                    <DockPanel>
+                        <Button Content="Connect"/>
+                    </DockPanel>
+
+                </StackPanel>
+            </GroupBox>
+            
+        </StackPanel>
+
+        <!--右パネル（obs-serial変換設定）-->
+        <StackPanel Grid.Column="1">
+
+            <!--OBS->Serial 変換設定-->
+            <GroupBox Header="OBS -> Serial">
+                <StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <!--Serial->OBS 変換設定-->
+            <GroupBox Header="Serial -> OBS">
+                <StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
     </Grid>
 </Window>
