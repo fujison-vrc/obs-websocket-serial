@@ -170,10 +170,16 @@ namespace OBSWebsocketSerial.ViewModels
         public DelegateCommand ObsToggleConnectionCommand { get; }
         public DelegateCommand SerialPortToggleConnectionCommand { get; }
 
+        #region obs connection method
+
         private void ObsToggleConnection()
         {
             //
         }
+
+        #endregion
+
+        #region serial connection method
 
         private void SerialPortToggleConnection()
         {
@@ -248,5 +254,7 @@ namespace OBSWebsocketSerial.ViewModels
         {
             Debug.WriteLine(message);
         }
+
+        #endregion
     }
 }
