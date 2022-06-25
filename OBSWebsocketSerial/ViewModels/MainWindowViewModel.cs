@@ -241,6 +241,7 @@ namespace OBSWebsocketSerial.ViewModels
         private void SerialDevice_Errored(object sender, Exception ex)
         {
             Debug.WriteLine(ex.Message);
+            StatusBarText = ex.Message;
         }
 
         private void SerialDevice_MessageReceived(object sender, string message)
