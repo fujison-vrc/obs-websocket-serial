@@ -12,8 +12,11 @@ namespace OBSWebsocketSerial.Models
     {
         private WebSocket _websocket;
 
+        public delegate void ErrorEventHandler(object sender, Exception ex);
+
         public event EventHandler Opened;
         public event EventHandler Closed;
+        public event ErrorEventHandler Errored;
 
         public bool IsConnected
         {
@@ -41,6 +44,7 @@ namespace OBSWebsocketSerial.Models
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                Errored?.Invoke(this, ex);
             }
         }
 
@@ -55,6 +59,7 @@ namespace OBSWebsocketSerial.Models
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                Errored?.Invoke(this, ex);
             }
         }
     }

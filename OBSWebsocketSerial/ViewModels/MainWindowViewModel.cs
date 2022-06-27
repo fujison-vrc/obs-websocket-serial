@@ -198,6 +198,7 @@ namespace OBSWebsocketSerial.ViewModels
 
                 _obsWebsocket.Opened += ObsWebsocket_Opened;
                 _obsWebsocket.Closed += ObsWebsocket_Closed;
+                _obsWebsocket.Errored += ObsWebsocket_Errored;
 
                 // OBS接続UIの更新
                 ObsToggleConnectionButtonEnable = false;
@@ -220,32 +221,46 @@ namespace OBSWebsocketSerial.ViewModels
                     _obsWebsocket.Disconnect();
                 }
 
-                _obsWebsocket = null;
+                if (_obsWebsocket != null) _obsWebsocket = null;
             }
         }
 
         private void ObsWebsocket_Opened(object sender, EventArgs e)
         {
-            ObsStatusText = "Connected";
-            ObsToggleConnectionButtonText = "Disconnect";
-
-            // OBS接続ボタンの有効化
-            ObsToggleConnectionButtonEnable = true;
-
-            // OBS設定の入力無効化
-            ObsConnectionInputable = false;
+            UpdateObsConnectionUI();
         }
 
         private void ObsWebsocket_Closed(object sender, EventArgs e)
         {
-            ObsStatusText = "Not connected";
-            ObsToggleConnectionButtonText = "Connect";
+            UpdateObsConnectionUI();
+
+            if (_obsWebsocket != null) _obsWebsocket = null;
+        }
+
+        private void ObsWebsocket_Errored(object sender, Exception ex)
+        {
+            StatusBarText = ex.Message;
+
+            UpdateObsConnectionUI();
+
+            if (_obsWebsocket != null && !_obsWebsocket.IsConnected)
+            {
+                _obsWebsocket = null;
+            }
+        }
+
+        private void UpdateObsConnectionUI()
+        {
+            bool isConnected = _obsWebsocket != null && _obsWebsocket.IsConnected;
+
+            ObsStatusText = isConnected ? "Connected" : "Not connected";
+            ObsToggleConnectionButtonText = isConnected ? "Disconnect" : "Connect";
+
+            // OBS設定の入力無効化
+            ObsConnectionInputable = !isConnected;
 
             // OBS接続ボタンの有効化
-            if (!ObsToggleConnectionButtonEnable) ObsToggleConnectionButtonEnable = true;
-
-            // OBS設定の入力有効化
-            ObsConnectionInputable = true;
+            ObsToggleConnectionButtonEnable = true;
         }
 
         #endregion
