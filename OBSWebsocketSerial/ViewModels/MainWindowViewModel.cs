@@ -154,6 +154,7 @@ namespace OBSWebsocketSerial.ViewModels
 
         #endregion
 
+        private ObsWebsocket _obsWebsocket;
         private SerialDevice _serialDevice;
 
         public MainWindowViewModel()
@@ -174,7 +175,77 @@ namespace OBSWebsocketSerial.ViewModels
 
         private void ObsToggleConnection()
         {
-            //
+            if (_obsWebsocket == null)
+            {
+                // 接続処理
+
+                _obsWebsocket = new();
+
+                // ポート入力値が整数値以外の場合は接続しない
+                int port;
+                if (!int.TryParse(ObsPortText, out port))
+                {
+                    StatusBarText = "obs port must be an integer";
+                    return;
+                }
+
+                // ポート入力値が範囲外の場合は接続しない
+                if (port < 0 || port > 65535)
+                {
+                    StatusBarText = "out of port range ( <=0 , >= 65535 )";
+                    return;
+                }
+
+                _obsWebsocket.Opened += ObsWebsocket_Opened;
+                _obsWebsocket.Closed += ObsWebsocket_Closed;
+
+                // OBS接続UIの更新
+                ObsToggleConnectionButtonEnable = false;
+                ObsConnectionInputable = false;
+                ObsStatusText = "Connecting...";
+
+                _obsWebsocket.Connect("ws", ObsHostText, port);
+            }
+            else
+            {
+                // 切断処理
+
+                if (_obsWebsocket.IsConnected)
+                {
+                    // OBS接続UIの更新
+                    ObsToggleConnectionButtonEnable = false;
+                    ObsConnectionInputable = false;
+                    ObsStatusText = "Disconnecting...";
+
+                    _obsWebsocket.Disconnect();
+                }
+
+                _obsWebsocket = null;
+            }
+        }
+
+        private void ObsWebsocket_Opened(object sender, EventArgs e)
+        {
+            ObsStatusText = "Connected";
+            ObsToggleConnectionButtonText = "Disconnect";
+
+            // OBS接続ボタンの有効化
+            ObsToggleConnectionButtonEnable = true;
+
+            // OBS設定の入力無効化
+            ObsConnectionInputable = false;
+        }
+
+        private void ObsWebsocket_Closed(object sender, EventArgs e)
+        {
+            ObsStatusText = "Not connected";
+            ObsToggleConnectionButtonText = "Connect";
+
+            // OBS接続ボタンの有効化
+            if (!ObsToggleConnectionButtonEnable) ObsToggleConnectionButtonEnable = true;
+
+            // OBS設定の入力有効化
+            ObsConnectionInputable = true;
         }
 
         #endregion
