@@ -5,6 +5,7 @@ using System.Diagnostics;
 using OBSWebsocketSerial.Models;
 using System;
 using Newtonsoft.Json.Linq;
+using System.Windows;
 
 namespace OBSWebsocketSerial.ViewModels
 {
