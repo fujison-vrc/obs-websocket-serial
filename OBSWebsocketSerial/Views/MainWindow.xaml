@@ -74,14 +74,12 @@
                     <DockPanel>
                         <Label Content="Password"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <!--<TextBox Text="{Binding ObsPasswordText}"
-                                 IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"/>-->
                         <PasswordBox PasswordChar="*"
                                      IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"
                                      VerticalContentAlignment="Center">
                             <i:Interaction.Behaviors>
                                 <behaviors:PasswordBindingBehavior
-                                    Password="{Binding ObsPasswordText}"/>
+                                    Password="{Binding ObsPasswordText, Mode=TwoWay}"/>
                             </i:Interaction.Behaviors>
                         </PasswordBox>
                     </DockPanel>
