@@ -71,7 +71,7 @@
                     </DockPanel>
 
                     <!--OBSのパスワード-->
-                    <DockPanel>
+                    <DockPanel Visibility="{Binding ObsPasswordControlVisibility, FallbackValue='Visible'}">
                         <Label Content="Password"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
                         <PasswordBox PasswordChar="*"

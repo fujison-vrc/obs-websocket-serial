@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using OBSWebsocketSerial.Models;
 using System;
+using System.Windows;
 
 namespace OBSWebsocketSerial.ViewModels
 {
@@ -46,7 +47,28 @@ namespace OBSWebsocketSerial.ViewModels
         public bool ObsUsePasswordCheck
         {
             get { return _obsUsePasswordCheck; }
-            set { SetProperty(ref _obsUsePasswordCheck, value); }
+            set
+            {
+                // OBSパスワード入力欄の表示/非表示を切り替え
+                if (value)
+                {
+                    ObsPasswordControlVisibility = Visibility.Visible;
+                }
+                else
+                {
+                    ObsPasswordControlVisibility = Visibility.Collapsed;
+                }
+
+                SetProperty(ref _obsUsePasswordCheck, value);
+            }
+        }
+
+        // OBSパスワードの入力欄の可視性
+        private Visibility _obsPasswordControlVisibility = Visibility.Collapsed;
+        public Visibility ObsPasswordControlVisibility
+        {
+            get { return _obsPasswordControlVisibility; }
+            set { SetProperty(ref _obsPasswordControlVisibility, value); }
         }
 
         // OBSパスワードのテキスト
