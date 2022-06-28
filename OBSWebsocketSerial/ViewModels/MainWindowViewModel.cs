@@ -206,7 +206,14 @@ namespace OBSWebsocketSerial.ViewModels
                 ObsConnectionInputable = false;
                 ObsStatusText = "Connecting...";
 
-                _obsWebsocket.Connect("ws", ObsHostText, port);
+                if (ObsUsePasswordCheck && !string.IsNullOrEmpty(ObsPasswordText))
+                {
+                    _obsWebsocket.Connect("ws", ObsHostText, port, ObsPasswordText);
+                }
+                else
+                {
+                    _obsWebsocket.Connect("ws", ObsHostText, port);
+                }
             }
             else
             {

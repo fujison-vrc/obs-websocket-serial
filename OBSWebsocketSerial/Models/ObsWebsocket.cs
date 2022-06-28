@@ -7,6 +7,7 @@ using System.Diagnostics;
 using WebSocket4Net;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
 
 namespace OBSWebsocketSerial.Models
 {
@@ -23,6 +24,8 @@ namespace OBSWebsocketSerial.Models
         public event MessageEventHandler MessageReceived;
         public event ErrorEventHandler Errored;
 
+        private string _password = null;
+
         public bool IsConnected
         {
             get
@@ -34,7 +37,7 @@ namespace OBSWebsocketSerial.Models
             }
         }
 
-        public void Connect(string scheme, string host, int port)
+        public void Connect(string scheme, string host, int port, string password = null)
         {
             try
             {
@@ -44,6 +47,8 @@ namespace OBSWebsocketSerial.Models
                 _websocket.Opened += Opened;
                 _websocket.Closed += Closed;
                 _websocket.MessageReceived += websocket_MessageReceived;
+
+                _password = password;
 
                 _websocket.Open();
             }
@@ -110,19 +115,31 @@ namespace OBSWebsocketSerial.Models
             // Hello (OpCode 0) 受信時
             if (receivedJson["op"].ToString() == "0")
             {
-                // OBSでパスワードが設定されている場合
-                if (receivedJson["d"]["authentication"] != null)
-                {
-                    Debug.WriteLine("password required");
-
-                    Disconnect();
-                    return;
-                }
-
                 requestJson = new()
                 {
                     { "rpcVersion", 1 }
                 };
+
+                // OBSでパスワードが設定されている場合
+                if (receivedJson["d"]["authentication"] != null)
+                {
+                    if (_password != null)
+                    {
+                        string callenge = receivedJson["d"]["authentication"]["challenge"].ToString();
+                        string salt = receivedJson["d"]["authentication"]["salt"].ToString();
+
+                        string authentication = GenerateAuthenticationText(_password, callenge, salt);
+
+                        requestJson.Add("authentication", authentication);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("password required");
+
+                        Disconnect();
+                        return;
+                    }
+                }
 
                 Send(1, requestJson);
             }
@@ -132,6 +149,26 @@ namespace OBSWebsocketSerial.Models
             {
                 Identified?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private string GenerateAuthenticationText(string password, string challenge, string salt)
+        {
+            string secret = GenerateHashedText(password + salt);
+            return GenerateHashedText(secret + challenge);
+        }
+
+        // code from -> https://qiita.com/Nossa/items/0af4429ceb7628d46909
+        private string GenerateHashedText(string str)
+        {
+            using SHA256 sha256 = SHA256.Create();
+
+            // 文字列をバイト配列にエンコードします。
+            byte[] encoded = Encoding.UTF8.GetBytes(str);
+
+            // 
+            byte[] hash = sha256.ComputeHash(encoded);
+
+            return Convert.ToBase64String(hash);
         }
     }
 }
