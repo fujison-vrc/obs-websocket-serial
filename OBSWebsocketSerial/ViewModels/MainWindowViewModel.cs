@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using OBSWebsocketSerial.Models;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace OBSWebsocketSerial.ViewModels
 {
@@ -182,8 +183,7 @@ namespace OBSWebsocketSerial.ViewModels
                 _obsWebsocket = new();
 
                 // ポート入力値が整数値以外の場合は接続しない
-                int port;
-                if (!int.TryParse(ObsPortText, out port))
+                if (!int.TryParse(ObsPortText, out int port))
                 {
                     StatusBarText = "obs port must be an integer";
                     return;
@@ -199,6 +199,7 @@ namespace OBSWebsocketSerial.ViewModels
                 _obsWebsocket.Opened += ObsWebsocket_Opened;
                 _obsWebsocket.Closed += ObsWebsocket_Closed;
                 _obsWebsocket.Errored += ObsWebsocket_Errored;
+                _obsWebsocket.Identified += ObsWebsocket_Identified;
 
                 // OBS接続UIの更新
                 ObsToggleConnectionButtonEnable = false;
@@ -249,7 +250,17 @@ namespace OBSWebsocketSerial.ViewModels
             }
         }
 
-        private void UpdateObsConnectionUI()
+        private void ObsWebsocket_Identified(object sender, EventArgs e)
+        {
+            //JObject requestData = new()
+            //{
+            //    { "sceneName", "Scene02" }
+            //};
+
+            //_obsWebsocket.SendRequest("SetCurrentProgramScene", requestData);
+        }
+
+            private void UpdateObsConnectionUI()
         {
             bool isConnected = _obsWebsocket != null && _obsWebsocket.IsConnected;
 
@@ -289,8 +300,7 @@ namespace OBSWebsocketSerial.ViewModels
                 _serialDevice.PortName = SerialPortNameSelected;
 
                 // ボーレートを設定
-                int baudRate;
-                if (int.TryParse(SerialPortBaudRateText, out baudRate))
+                if (int.TryParse(SerialPortBaudRateText, out int baudRate))
                 {
                     _serialDevice.BaudRate = baudRate;
                 }

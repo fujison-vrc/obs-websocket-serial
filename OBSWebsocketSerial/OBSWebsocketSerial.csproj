@@ -5,6 +5,7 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Prism.Unity" Version="8.1.97" />
     <PackageReference Include="System.IO.Ports" Version="6.0.0" />
     <PackageReference Include="WebSocket4Net" Version="0.15.2" />
