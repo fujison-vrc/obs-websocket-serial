@@ -1,7 +1,9 @@
 ﻿<Window x:Class="OBSWebsocketSerial.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:behaviors="clr-namespace:OBSWebsocketSerial.Behaviours"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="{Binding Title}" Height="420" Width="600" >
 
@@ -72,8 +74,16 @@
                     <DockPanel>
                         <Label Content="Password"
                                Style="{StaticResource ConnectionPropertyLabel}"/>
-                        <TextBox Text="{Binding ObsPasswordText}"
-                                 IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"/>
+                        <!--<TextBox Text="{Binding ObsPasswordText}"
+                                 IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"/>-->
+                        <PasswordBox PasswordChar="*"
+                                     IsEnabled="{Binding ObsConnectionInputable, Mode=OneWay}"
+                                     VerticalContentAlignment="Center">
+                            <i:Interaction.Behaviors>
+                                <behaviors:PasswordBindingBehavior
+                                    Password="{Binding ObsPasswordText}"/>
+                            </i:Interaction.Behaviors>
+                        </PasswordBox>
                     </DockPanel>
 
                     <!--OBSのステータス表示-->
