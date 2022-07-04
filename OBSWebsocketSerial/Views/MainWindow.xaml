@@ -5,7 +5,7 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:behaviors="clr-namespace:OBSWebsocketSerial.Behaviours"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="420" Width="600" >
+        Title="{Binding Title}" Height="420" Width="700" >
 
     <Window.Resources>
         <Style TargetType="GroupBox">
@@ -35,11 +35,12 @@
 
         <Grid.RowDefinitions>
             <RowDefinition/>
+            <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <!--左パネル（接続設定）-->
-        <StackPanel>
+        <StackPanel Grid.Row="0" Grid.RowSpan="2">
 
             <!--OBS接続設定-->
             <GroupBox Header="OBS Connection">
@@ -142,24 +143,27 @@
             
         </StackPanel>
 
-        <!--右パネル（obs-serial変換設定）-->
-        <StackPanel Grid.Column="1">
+        <!--OBS->Serial 変換設定-->
+        <GroupBox Header="OBS -> Serial" Grid.Row="0" Grid.Column="1">
+            <StackPanel>
+                <DockPanel>
+                    <StackPanel Width="150" DockPanel.Dock="Right">
 
-            <!--OBS->Serial 変換設定-->
-            <GroupBox Header="OBS -> Serial">
-                <StackPanel>
-                </StackPanel>
-            </GroupBox>
+                    </StackPanel>
+                    <DataGrid>
 
-            <!--Serial->OBS 変換設定-->
-            <GroupBox Header="Serial -> OBS">
-                <StackPanel>
-                </StackPanel>
-            </GroupBox>
+                    </DataGrid>
+                </DockPanel>
+            </StackPanel>
+        </GroupBox>
 
-        </StackPanel>
+        <!--Serial->OBS 変換設定-->
+        <GroupBox Header="Serial -> OBS" Grid.Row="1" Grid.Column="1">
+            <StackPanel>
+            </StackPanel>
+        </GroupBox>
 
-        <StatusBar Grid.Row="1" Grid.ColumnSpan="2">
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
             <TextBlock Text="{Binding StatusBarText, FallbackValue='StatusBarText'}"/>
         </StatusBar>
 

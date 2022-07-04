@@ -177,6 +177,18 @@ namespace OBSWebsocketSerial.ViewModels
 
         #endregion
 
+        #region obs to serial property
+
+        //
+
+        #endregion
+
+        #region serial to obs property
+
+        //
+
+        #endregion
+
         private ObsWebsocket _obsWebsocket;
         private SerialDevice _serialDevice;
 
@@ -379,6 +391,18 @@ namespace OBSWebsocketSerial.ViewModels
         {
             Debug.WriteLine(message);
         }
+
+        #endregion
+
+        #region obs to serial method
+
+        //
+
+        #endregion
+
+        #region serial to obs method
+
+        //
 
         #endregion
     }
